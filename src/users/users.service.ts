@@ -18,3 +18,12 @@ export const getUserById = async (userId: number): Promise<IUser | null> => {
   // Return null if the user is not found
   return user || null
 }
+
+export const getAll = async (): Promise<IUser[] | null> => {
+  // const user = mockDatabase[userId]
+  const userRepository = AppDataSource.getRepository(User)
+  const user = await userRepository.find()
+
+  // Return null if the user is not found
+  return user || null
+}
