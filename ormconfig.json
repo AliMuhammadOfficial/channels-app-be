@@ -1,0 +1,17 @@
+{
+  "type": "postgres",
+  "host": "localhost",
+  "port": 5432,
+  "username": "root",
+  "password": "mi6pass",
+  "database": "db_mi6",
+  "synchronize": true,
+  "entities": ["src/**/entities/*.ts"],
+  "subscribers": ["src/**/subscribers/*.ts"],
+  "migrations": ["src/migration/*.js"],
+  "cli": {
+    "entitiesDir": "src/entities",
+    "migrationsDir": "src/migrations",
+    "subscribersDir": "src/subscribers"
+  }
+}
