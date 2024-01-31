@@ -8,4 +8,4 @@ const router: Router = express.Router()
 router.get('/', findAll)
 router.get('/:id', passport.authenticate('jwt', { session: false }), getUserDetails)
 
-export { router as userRoute }
+export { router as usersRoute }

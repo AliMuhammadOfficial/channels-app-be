@@ -25,12 +25,11 @@ export const configurePassport = (passport: PassportStatic): void => {
         const userRepository = AppDataSource.getRepository(User)
         const user = await userRepository.findBy({
           id: jwtPayload.sub,
-        }) // find by id
+        })
         if (user) {
           return done(null, user)
         } else {
           return done(null, false)
-          // or you could create a new account
         }
       } catch (error) {
         return done(error, false)

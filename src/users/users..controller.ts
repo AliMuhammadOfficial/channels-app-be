@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { NotFoundError } from '../common/exceptions'
-import { getUserById } from './user.service'
+import { getUserById } from './users.service'
 import { sendErrorResponse } from '../common/middlewares/error.middleware'
 
 export const findById = (req: Request, res: Response, next: NextFunction) => {
@@ -19,7 +19,7 @@ export const findAll = (req: Request, res: Response, next: NextFunction) => {
   }
 }
 
-export const getUserDetails = async (req: Request, res: Response) => {
+export const getUserDetails = async (req: Request<{ id: number }>, res: Response) => {
   const userId = req.params.id
 
   try {

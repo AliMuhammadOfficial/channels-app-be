@@ -31,10 +31,8 @@ router.post('/signup', async (req: Request, res: Response, next: NextFunction) =
       return res.status(409).json({ message: 'User with this email already exists' })
     }
 
-    // Hash the password before saving it to the database
     const hashedPassword = await bcrypt.hash(password, 10)
 
-    // Create a new user
     const newUser = new User()
     newUser.email = email
     newUser.firstName = firstName
@@ -43,10 +41,9 @@ router.post('/signup', async (req: Request, res: Response, next: NextFunction) =
 
     await userRepository.save(newUser)
 
-    // If signup is successful, generate a JWT token
     const token = jwt.sign({ sub: newUser.id }, JwtSecretKey, { expiresIn: '1h' })
 
-    return res.json({ token })
+    return res.json({ accessToken: token })
   } catch (error) {
     return next(error)
   }
@@ -68,37 +65,13 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
       return res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    // Generate JWT token
     const token = jwt.sign({ sub: user.id }, JwtSecretKey, { expiresIn: '1h' })
 
-    return res.json({ token })
+    return res.json({ accessToken: token })
   } catch (err) {
     next(err)
   }
 })
-// router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
-//   const { email, password } = req.body
-
-//   if (!email || !password) {
-//     return res.status(400).json({ message: 'Email and password are required' })
-//   }
-
-//   passport.authenticate('jwt', { session: false }, (err: any, user: { email: string; password: string; id: any }) => {
-//     if (err || !user) {
-//       return res.status(401).json({ message: 'Unauthorized' })
-//     }
-
-//     // Validate the user's email and password (you may use a library like bcrypt for password hashing)
-//     if (user.email !== email || user.password !== password) {
-//       return res.status(401).json({ message: 'Invalid email or password' })
-//     }
-
-//     // If authentication is successful, generate a JWT token
-//     const token = jwt.sign({ sub: user.id }, JwtSecretKey, { expiresIn: '1h' })
-
-//     return res.json({ token })
-//   })(req, res, next)
-// })
 
 router.post('/refresh-token', async (req: Request, res: Response, next: NextFunction) => {
   const refreshToken = req.body.refreshToken
@@ -108,10 +81,8 @@ router.post('/refresh-token', async (req: Request, res: Response, next: NextFunc
   }
 
   try {
-    // Verify the refresh token
     const decoded = jwt.verify(refreshToken, RefreshTokenSecretKey)
 
-    // Generate a new JWT token
     const newToken = jwt.sign({ sub: decoded.sub }, JwtSecretKey, { expiresIn: '1h' })
 
     return res.json({ token: newToken })
