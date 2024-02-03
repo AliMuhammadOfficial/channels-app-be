@@ -9,21 +9,17 @@ interface IUser {
 }
 
 export const getUserById = async (userId: number): Promise<IUser | null> => {
-  // const user = mockDatabase[userId]
   const userRepository = AppDataSource.getRepository(User)
   const user = await userRepository.findOneBy({
     id: userId,
   })
 
-  // Return null if the user is not found
   return user || null
 }
 
 export const getAll = async (): Promise<IUser[] | null> => {
-  // const user = mockDatabase[userId]
   const userRepository = AppDataSource.getRepository(User)
-  const user = await userRepository.find()
+  const users = await userRepository.find()
 
-  // Return null if the user is not found
-  return user || null
+  return users || null
 }

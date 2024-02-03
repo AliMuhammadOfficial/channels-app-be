@@ -1,5 +1,4 @@
 import express, { Router } from 'express'
-// import { findAll, getUserDetails } from './users..controller'
 // import { requireAuth } from '../common/utils'
 import passport from 'passport'
 import UserController from './users..controller'
