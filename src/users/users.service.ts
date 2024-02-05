@@ -1,25 +1,18 @@
 import { AppDataSource } from '../data-source'
 import { User } from './entities/user.entity'
 
-interface IUser {
-  id: number
-  email: string
-  firstName: string
-  lastName: string
-}
-
-export const getUserById = async (userId: number): Promise<IUser | null> => {
+export const getUserById = async (userId: number): Promise<User | null> => {
   const userRepository = AppDataSource.getRepository(User)
   const user = await userRepository.findOneBy({
     id: userId,
   })
 
-  return user || null
+  return user
 }
 
-export const getAll = async (): Promise<IUser[] | null> => {
+export const getAll = async (): Promise<User[] | null> => {
   const userRepository = AppDataSource.getRepository(User)
   const users = await userRepository.find()
 
-  return users || null
+  return users
 }
