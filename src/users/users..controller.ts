@@ -2,13 +2,13 @@
 
 import { Request, Response, NextFunction } from 'express'
 import { NotFoundError } from '../common/exceptions'
-import { getAll, getUserById } from './users.service'
 import { sendErrorResponse } from '../common/middlewares/error.middleware'
+import usersService from './users.service'
 
 class UserController {
   static findAll = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const users = await getAll()
+      const users = await usersService.fingAll()
 
       return res.status(200).json(users)
     } catch (error) {
@@ -16,11 +16,11 @@ class UserController {
     }
   }
 
-  static getUserDetails = async (req: Request<{ id: number }>, res: Response) => {
+  static getUserDetails = async (req: Request<{ id: string }>, res: Response) => {
     const userId = req.params.id
 
     try {
-      const user = await getUserById(userId)
+      const user = await usersService.findById(userId)
 
       if (!user) {
         const notFoundError = new NotFoundError(`User not found with ID: ${userId}`)

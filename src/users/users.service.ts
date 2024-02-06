@@ -1,18 +1,27 @@
 import { AppDataSource } from '../data-source'
 import { User } from './entities/user.entity'
 
-export const getUserById = async (userId: number): Promise<User | null> => {
-  const userRepository = AppDataSource.getRepository(User)
-  const user = await userRepository.findOneBy({
-    id: userId,
-  })
+class UsersService {
+  private userRepository = AppDataSource.getRepository(User)
+  async fingAll() {
+    return await this.userRepository.find()
+  }
 
-  return user
+  async findById(id: string) {
+    return await this.userRepository.findOneBy({ id })
+  }
+
+  async create(userData: {
+    username: string
+    email: string
+    password: string
+    firstName?: string
+    lastName?: string
+    isActive?: boolean
+    profileImage?: string
+  }): Promise<User> {
+    const newUser = this.userRepository.create(userData)
+    return await this.userRepository.save(newUser)
+  }
 }
-
-export const getAll = async (): Promise<User[] | null> => {
-  const userRepository = AppDataSource.getRepository(User)
-  const users = await userRepository.find()
-
-  return users
-}
+export default new UsersService()

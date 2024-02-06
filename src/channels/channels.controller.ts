@@ -3,7 +3,7 @@ import { Request, Response } from 'express'
 import ChannelsService from './channels.service'
 
 class ChannelsController {
-  static getAllChannels = async (req: Request, res: Response) => {
+  getAllChannels = async (req: Request, res: Response) => {
     try {
       const channels = await ChannelsService.getAllChannels()
       res.json(channels)
@@ -13,10 +13,10 @@ class ChannelsController {
     }
   }
 
-  static getChannelById = async (req: Request, res: Response) => {
+  getChannelById = async (req: Request, res: Response) => {
     try {
-      const channelId = parseInt(req.params.id, 10)
-      const channel = await ChannelsService.getChannelById(channelId)
+      const channelId = req.params.id
+      const channel = await ChannelsService.findChannelById(channelId)
 
       if (channel) {
         res.json(channel)
@@ -29,11 +29,15 @@ class ChannelsController {
     }
   }
 
-  static createChannel = async (req: Request, res: Response) => {
+  createChannel = async (req: Request, res: Response) => {
+    console.log('req', req)
+    console.log('req.user', req.user)
     try {
-      const channelData = req.body
-      const newChannel = await ChannelsService.createChannel(channelData)
-      res.status(201).json(newChannel)
+      if (req.user) {
+        const channelData = { ...req.body, creatorId: req.user[0].id, creator: req.user[0] }
+        const newChannel = await ChannelsService.createChannel(channelData)
+        res.status(201).json(newChannel)
+      }
     } catch (error) {
       console.error('Error creating channel:', error)
       res.status(500).json({ message: 'Internal server error' })
@@ -41,4 +45,4 @@ class ChannelsController {
   }
 }
 
-export default ChannelsController
+export default new ChannelsController()

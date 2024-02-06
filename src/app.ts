@@ -2,11 +2,11 @@
 import express, { Application, Request, Response, NextFunction } from 'express'
 import cors from 'cors'
 import passport from 'passport'
-
-import { usersRoute } from './users/users.route'
 import { configurePassport } from './auth/strategies/passport-jwt.strategy'
-import { authRoute } from './auth/auth.route'
-import { channelsRoute } from './channels/channels.route'
+import { usersRouter } from './users/users.router'
+import { messagesRouter } from './messages/messages.router'
+import { channelsRouter } from './channels/channels.router'
+import { authRouter } from './auth/auth.router'
 
 const app: Application = express()
 
@@ -25,12 +25,9 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 })
 
 // Routes
-app.use('/users', usersRoute)
-app.use('/auth', authRoute)
-app.use('/channels', channelsRoute)
-
-app.get('/secure-route', passport.authenticate('jwt', { session: false }), (req: Request, res: Response) => {
-  return res.send(`Welcome, ${req?.user}!`)
-})
+app.use('/auth', authRouter)
+app.use('/users', usersRouter)
+app.use('/channels', channelsRouter)
+app.use('/messages', messagesRouter)
 
 export default app

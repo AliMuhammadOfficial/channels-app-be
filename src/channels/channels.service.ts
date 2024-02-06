@@ -8,12 +8,12 @@ class ChannelsService {
     return await channelRepository.find()
   }
 
-  static async getChannelById(id: number) {
+  static async findChannelById(id: string) {
     const channelRepository = AppDataSource.getRepository(Channel)
     return await channelRepository.findOneBy({ id })
   }
 
-  static async createChannel(channelData: { name: string; location: string }) {
+  static async createChannel(channelData: Channel) {
     const channelRepository = AppDataSource.getRepository(Channel)
     const newChannel = channelRepository.create(channelData)
     return await channelRepository.save(newChannel)

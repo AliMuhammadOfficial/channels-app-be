@@ -2,14 +2,14 @@
 
 import { Strategy, ExtractJwt, VerifiedCallback } from 'passport-jwt'
 import { PassportStatic } from 'passport'
-import { User } from '../../users/entities/user.entity'
 import { AppDataSource } from '../../data-source'
+import { User } from '../../users/entities/user.entity'
 
 export const JwtSecretKey = process.env.JWT_SECRET || 'thesuppersecret'
 export const RefreshTokenSecretKey = 'your_refresh_secret_key'
 
 interface JwtPayload {
-  sub: number
+  sub: string
 }
 
 const options = {
@@ -24,7 +24,7 @@ export const configurePassport = (passport: PassportStatic): void => {
         console.log('jwtPayload', jwtPayload)
         const userRepository = AppDataSource.getRepository(User)
         const user = await userRepository.findBy({
-          id: jwtPayload.sub,
+          email: jwtPayload.sub,
         })
         if (user) {
           return done(null, user)

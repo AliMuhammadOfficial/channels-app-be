@@ -1,11 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, ManyToMany, JoinTable } from 'typeorm'
-import { Message } from '../../messages/entities/message.entity'
+import { Entity, Column, OneToMany, ManyToOne, ManyToMany, JoinTable, CreateDateColumn, UpdateDateColumn, BeforeInsert } from 'typeorm'
+import { nanoid } from 'nanoid'
 import { User } from '../../users/entities/user.entity'
+import { Message } from '../../messages/entities/message.entity'
 
 @Entity()
 export class Channel {
-  @PrimaryGeneratedColumn()
-  id!: number
+  @Column({ type: 'text', primary: true, default: () => "'" + nanoid() + "'" })
+  id!: string
 
   @Column()
   name!: string
@@ -28,4 +29,17 @@ export class Channel {
 
   @OneToMany(() => Message, (message) => message.channel)
   messages!: Message[]
+
+  @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdAt!: Date
+
+  @UpdateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
+  updatedAt!: Date
+
+  @BeforeInsert()
+  generateId() {
+    if (!this.id) {
+      this.id = nanoid()
+    }
+  }
 }

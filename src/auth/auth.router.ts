@@ -9,6 +9,7 @@ import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { User } from '../users/entities/user.entity'
 import { AppDataSource } from '../data-source'
+import passport from 'passport'
 
 const router: Router = Router()
 router.use(express.json())
@@ -41,7 +42,7 @@ router.post('/signup', async (req: Request, res: Response, next: NextFunction) =
 
     await userRepository.save(newUser)
 
-    const token = jwt.sign({ sub: newUser.id }, JwtSecretKey, { expiresIn: '1h' })
+    const token = jwt.sign({ sub: newUser.email }, JwtSecretKey, { expiresIn: '1h' })
 
     return res.json({ accessToken: token })
   } catch (error) {
@@ -51,7 +52,6 @@ router.post('/signup', async (req: Request, res: Response, next: NextFunction) =
 
 router.post('/login', async (req: Request, res: Response, next: NextFunction) => {
   const { email, password } = req.body
-
   try {
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' })
@@ -61,11 +61,12 @@ router.post('/login', async (req: Request, res: Response, next: NextFunction) =>
     const user = await userRepository.findOneBy({
       email,
     })
+    console.log('user', user, password)
     if (!user || !(await bcrypt.compare(password, user.password))) {
       return res.status(401).json({ message: 'Invalid email or password' })
     }
 
-    const token = jwt.sign({ sub: user.id }, JwtSecretKey, { expiresIn: '1h' })
+    const token = jwt.sign({ sub: user.email }, JwtSecretKey, { expiresIn: '1h' })
 
     return res.json({ accessToken: token })
   } catch (err) {
@@ -91,4 +92,4 @@ router.post('/refresh-token', async (req: Request, res: Response, next: NextFunc
   }
 })
 
-export { router as authRoute }
+export { router as authRouter }
